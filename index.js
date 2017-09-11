@@ -15,7 +15,6 @@ var allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
-
     next();
 }
 app.use(allowCrossDomain);
@@ -26,13 +25,17 @@ app.get('/', (req, res) => {
 
 app.get('/search/repos/', (req, res) => {
   res.set('Content-Type', 'application/json');
-  console.log('trying to search');
-  const url = `${GH_API_URL}/search/repos?q=${req.query.q}&sort=stars&order=desc&${AUTH_PARAMS}`;
+  const url = `${GH_API_URL}/search/repositories?q=${req.query.q}&sort=stars&order=desc&${AUTH_PARAMS}`;
 
   axios.get(url).then(response => {
-    res.status(200).json(response.body);
+    //console.log(response.body);
+    res.status(200).json(response.data);
+    //res.json({ message: 'hooray! welcome to our api!' })
   }).catch((error) => {
-      res.send(error);
+    //res.send(error);
+      console.log(error.message);
+      res.status(error.status).json(error.message);
+      //res.json({ message: 'meeec! welcome to our api!' })
   });
 
 })
